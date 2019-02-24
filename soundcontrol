@@ -1,0 +1,60 @@
+#!/bin/bash
+
+#this script requires notify-send.sh from (https://github.com/vlevit/notify-send.sh)
+#vanilla notify-send is not able to replace previous notifications
+#this script requires 2 picture files for icons
+#this script requires pacmd and pactl
+
+#location of temp file
+lastIDfile=/tmp/soundcontrolID
+
+#If there is not temp file create one.
+if [ ! -f $lastIDfile ]; then
+	echo 0 > $lastIDfile
+fi
+
+#extract id from file
+lastID=$(<$lastIDfile)
+
+#icon pictures
+speakerPicture=~/.config/soundcontrol/icons8-voice-96.png
+mutePicture=~/.config/soundcontrol/icons8-mute-96.png
+
+#second the notification should stay on screen
+time=10
+
+#find the active sink
+SINK=$(pacmd list-sinks | grep "index:" | grep '*' | awk '{print $3}')
+
+#if no sink found choose default sink
+if [ "$SINK" == "" ]; then
+  SINK="0"
+fi
+
+#if mute then mute otherwise set 
+if [ "$1" != "M" ]; then
+  pactl set-sink-volume "$SINK" "$1"
+else
+  pactl set-sink-mute "$SINK" toggle
+fi
+
+#save current volume amount in percent
+volume=$(pacmd list-sinks | grep "volume" | head -1 | awk '{print $5}')
+
+#choose icon based on mute status
+if [ "$(pacmd list-sinks | grep 'muted' | awk '{print $2}')" == "yes" ]; then
+	icon=$mutePicture
+else
+	icon=$speakerPicture
+fi
+
+#send notification 
+notify-send.sh -t $(( 1000*$time )) -i $icon -r $lastID -p "Volume: $volume" > $lastIDfile
+
+#wait time plus 10 seconds just in case
+sleep "$(( $time+10 ))"s
+
+#remove temp file
+if [ -f $lastIDfile ]; then
+	rm $lastIDfile
+fi
