@@ -2,7 +2,7 @@
 
 #this script requires notify-send.sh from (https://github.com/vlevit/notify-send.sh)
 #vanilla notify-send is not able to replace previous notifications
-#this script requires 2 picture files for icons
+#this script requires 2 picture files for icons, replace the paths below with paths to the files
 #this script requires pacmd and pactl
 
 #location of temp file
@@ -17,8 +17,8 @@ fi
 lastID=$(<$lastIDfile)
 
 #icon pictures
-speakerPicture=~/.config/soundcontrol/icons8-voice-96.png
-mutePicture=~/.config/soundcontrol/icons8-mute-96.png
+speakerPicture=~/.config/soundcontrol/voice.png
+mutePicture=~/.config/soundcontrol/mute.png
 
 #second the notification should stay on screen
 time=10
