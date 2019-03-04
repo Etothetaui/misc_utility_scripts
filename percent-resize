@@ -1,9 +1,13 @@
 #!/bin/bash
 
+#find current screen dimensions (not sure if works for more than one screen)
 resX=$(xdpyinfo | grep dimensions | awk '{print $2}' | cut -d "x" -f 1)
 resY=$(xdpyinfo | grep dimensions | awk '{print $2}' | cut -d "x" -f 2)
 
 echo dimensions "$resX"x"$resY"
+
+#takes intput either as a fraction "2/3" or as a percent with out the % sign "66"
+#these if statements convert fraction to a percent if needed
 
 if [[ $1 == */* ]]; then
 	perX=$( echo $1 | cut -d "/" -f 1 )
@@ -23,10 +27,12 @@ fi
 
 echo scale "$perX"x"$perY"
 
+#calculates size of window
 winX=$(( ($resX * $perX) / 100 ))
 winY=$(( ($resY * $perY) / 100 ))
 
 echo window size "$winX"x"$winY"
 
+#makes window floating if not already and then changes size to scaled size
 i3-msg floating enable
 i3-msg resize set $winX px $winY px
