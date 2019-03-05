@@ -8,17 +8,9 @@
 #location of temp file
 lastIDfile=/tmp/soundcontrolID
 
-#If there is not temp file create one.
-if [ ! -f $lastIDfile ]; then
-	echo 0 > $lastIDfile
-fi
-
-#extract id from file
-lastID=$(<$lastIDfile)
-
 #icon pictures
-speakerPicture=~/.config/soundcontrol/voice.png
-mutePicture=~/.config/soundcontrol/mute.png
+speakerPicture=~/.config/soundcontrol/icons8-voice-96.png
+mutePicture=~/.config/soundcontrol/icons8-mute-96.png
 
 #second the notification should stay on screen
 time=10
@@ -49,12 +41,15 @@ else
 fi
 
 #send notification 
-notify-send.sh -t $(( 1000*$time )) -i $icon -r $lastID -p "Volume: $volume" > $lastIDfile
+notify-send.sh -t $(( 1000*$time )) -i $icon -R $lastIDfile -p "Volume: $volume"
 
-#wait time plus 10 seconds just in case
-sleep "$(( $time+10 ))"s
+#wait time plus 10 seconds just in case (uncommenting these lines makes sure the temp file is removed after the script ends
+#however it also may cause the replace notification function to not work causing there to be multiple notifications
+#on the screen at once.
+
+#sleep "$(( $time+10 ))"s
 
 #remove temp file
-if [ -f $lastIDfile ]; then
-	rm $lastIDfile
-fi
+#if [ -f $lastIDfile ]; then
+#	rm $lastIDfile
+#fi
