@@ -31,7 +31,7 @@ else
 fi
 
 #save current volume amount in percent
-volume=$(pacmd list-sinks | grep "volume" | head -1 | awk '{print $5}')
+volume=$(pacmd list-sinks | grep "index: $SINK" -C7 | grep "volume" | awk '{print $5}')
 
 #choose icon based on mute status
 if [ "$(pacmd list-sinks | grep 'muted' | awk '{print $2}')" == "yes" ]; then
@@ -43,10 +43,7 @@ fi
 #send notification 
 notify-send.sh -t $(( 1000*$time )) -i $icon -R $lastIDfile -p "Volume: $volume"
 
-#wait time plus 10 seconds just in case (uncommenting these lines makes sure the temp file is removed after the script ends
-#however it also may cause the replace notification function to not work causing there to be multiple notifications
-#on the screen at once.
-
+#wait time plus 10 seconds just in case
 #sleep "$(( $time+10 ))"s
 
 #remove temp file
